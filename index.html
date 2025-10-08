@@ -1,93 +1,235 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Humble Choice Countdown</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body {
-      font-family: system-ui, sans-serif;
-      background: #0d0d0d;
-      color: #f0f0f0;
-      text-align: center;
-      margin-top: 10%;
-    }
-    h1 { font-size: 2em; margin-bottom: 0.5em; }
-    #countdown { font-size: 2em; margin-bottom: 0.5em; }
-    #target, #timezone { color: #aaa; font-size: 1em; }
-  </style>
+    <meta charset="UTF-8">
+    <title>Humble Choice Countdown</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            background-color: #282c34;
+            color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+            body::before {
+                content: "";
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: repeating-linear-gradient( 45deg, #2a2d35, #2a2d35 4px, transparent 4px, transparent 35px );
+                pointer-events: none;
+                z-index: -1;
+            }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            height: 100vh;
+        }
+
+        .top-half {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 0 5%;
+        }
+
+        .bottom-half {
+            flex: 1;
+            background-color: #1f2229;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 10px 5px 10px;
+            position: relative; /* for positioning disclaimer at bottom */
+        }
+
+        h1 {
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+
+        #countdown {
+            font-size: clamp(1.5rem, 6vw, 3rem);
+            margin-bottom: 1rem;
+            word-break: break-word;
+            color: #cb272c;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
+        }
+
+        #endtime {
+            color: #aaa;
+            font-size: clamp(1rem, 4vw, 1.5rem);
+            line-height: 1.4;
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 6px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .games-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .game-card {
+            flex: 0 0 auto;
+            width: 80px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #f0f0f0;
+        }
+
+            .game-card img {
+                width: 100%;
+                border-radius: 4px;
+                margin-bottom: 4px;
+                object-fit: cover;
+            }
+
+        .disclaimer {
+            color: #888;
+            font-size: 0.8rem;
+            text-align: center;
+            position: absolute;
+            bottom: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .game-card {
+                width: 60px;
+                font-size: 0.6rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>Next Humble Choice Reveal</h1>
-  <div id="countdown">Loading…</div>
-  <div id="target"></div>
-  <div id="timezone"></div>
+    <div class="container">
+        <div class="top-half">
+            <h1>Next Humble Choice Reveal</h1>
+            <div id="countdown" aria-live="polite">Loading...</div>
+            <div id="endtime"></div>
+        </div>
+        <div class="bottom-half">
+            <div class="games-grid" id="gamesGrid">
+                <!-- 9 Placeholder game cards -->
+                <div class="game-card">
+                    <img src="https://via.placeholder.com/80x80?text=Game+1" alt="Game 1">
+                    <div class="game-title">Game 1</div>
+                </div>
+                <div class="game-card">
+                    <img src="https://via.placeholder.com/80x80?text=Game+2" alt="Game 2">
+                    <div class="game-title">Game 2</div>
+                </div>
+                <div class="game-card">
+                    <img src="https://via.placeholder.com/80x80?text=Game+3" alt="Game 3">
+                    <div class="game-title">Game 3</div>
+                </div>
+                <div class="game-card">
+                    <img src="https://via.placeholder.com/80x80?text=Game+4" alt="Game 4">
+                    <div class="game-title">Game 4</div>
+                </div>
+                <div class="game-card">
+                    <img src="https://via.placeholder.com/80x80?text=Game+5" alt="Game 5">
+                    <div class="game-title">Game 5</div>
+                </div>
+                <div class="game-card">
+                    <img src="https://via.placeholder.com/80x80?text=Game+6" alt="Game 6">
+                    <div class="game-title">Game 6</div>
+                </div>
+                <div class="game-card">
+                    <img src="https://via.placeholder.com/80x80?text=Game+7" alt="Game 7">
+                    <div class="game-title">Game 7</div>
+                </div>
+                <div class="game-card">
+                    <img src="https://via.placeholder.com/80x80?text=Game+8" alt="Game 8">
+                    <div class="game-title">Game 8</div>
+                </div>
+                <div class="game-card">
+                    <img src="https://via.placeholder.com/80x80?text=Game+9" alt="Game 9">
+                    <div class="game-title">Game 9</div>
+                </div>
+            </div>
+            <p class="disclaimer">
+                This is an unofficial countdown and is not affiliated with Humble Bundle.
+            </p>
+        </div>
+    </div>
 
-  <script>
-    // --- 1️⃣ Helper: find the first Tuesday of a given month ---
-    function firstTuesday(year, month) {
-      const d = new Date(Date.UTC(year, month, 1));
-      while (d.getUTCDay() !== 2) { // 0=Sun, 1=Mon, 2=Tue
-        d.setUTCDate(d.getUTCDate() + 1);
-      }
-      return d;
-    }
+    <script>
+        // Countdown JS (unchanged)
+        function firstTuesdayPT(year, month) {
+            let d = new Date(Date.UTC(year, month, 1, 17, 0, 0));
+            while (new Intl.DateTimeFormat('en-US', { timeZone: 'America/Los_Angeles', weekday: 'short' }).format(d) !== 'Tue') {
+                d.setUTCDate(d.getUTCDate() + 1);
+            }
+            return d;
+        }
 
-    // --- 2️⃣ Find the next event date ---
-    const now = new Date();
-    let event = firstTuesday(now.getUTCFullYear(), now.getUTCMonth());
-    if (now > new Date(event)) {
-      // Already passed this month's first Tuesday, move to next month
-      event = firstTuesday(now.getUTCFullYear(), now.getUTCMonth() + 1);
-    }
+        function getNextEvent() {
+            const now = new Date();
+            let event = firstTuesdayPT(now.getUTCFullYear(), now.getUTCMonth());
 
-    // --- 3️⃣ Set target time: 10 AM PT (Pacific Time) ---
-    // PT offset changes with DST; use locale-based conversion
-    const eventPT = new Date(
-      new Intl.DateTimeFormat('en-US', {
-        timeZone: 'America/Los_Angeles',
-        year: 'numeric', month: 'numeric', day: 'numeric'
-      }).format(event)
-    );
-    eventPT.setHours(10, 0, 0, 0);
+            const nowPT = new Date(now.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }));
+            const eventPT = new Date(event.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }));
 
-    // Convert PT time to UTC timestamp for countdown
-    const targetUTC = new Date(
-      eventPT.toLocaleString('en-US', { timeZone: 'UTC' })
-    );
+            if (nowPT > eventPT) {
+                const nextMonth = now.getUTCMonth() === 11 ? 0 : now.getUTCMonth() + 1;
+                const nextYear = now.getUTCMonth() === 11 ? now.getUTCFullYear() + 1 : now.getUTCFullYear();
+                event = firstTuesdayPT(nextYear, nextMonth);
+            }
 
-    // --- 4️⃣ Update countdown every second ---
-    const countdownEl = document.getElementById('countdown');
-    const targetEl = document.getElementById('target');
-    const tzEl = document.getElementById('timezone');
+            return event;
+        }
 
-    function updateCountdown() {
-      const nowUTC = new Date();
-      const diff = targetUTC - nowUTC;
-      if (diff <= 0) {
-        countdownEl.textContent = "Humble Choice is live!";
-        return;
-      }
+        let targetUTC = getNextEvent();
+        const countdownEl = document.getElementById('countdown');
+        const endtimeEl = document.getElementById('endtime');
 
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      const mins = Math.floor((diff / (1000 * 60)) % 60);
-      const secs = Math.floor((diff / 1000) % 60);
+        function updateCountdown() {
+            const nowUTC = new Date();
+            const diff = targetUTC - nowUTC;
+            if (diff <= 0) {
+                countdownEl.textContent = "Humble Choice is live!";
+                return;
+            }
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const mins = Math.floor((diff / (1000 * 60)) % 60);
+            const secs = Math.floor((diff / 1000) % 60);
+            countdownEl.textContent = `${days}d ${hours}h ${mins}m ${secs}s`;
+        }
 
-      countdownEl.textContent = `${days}d ${hours}h ${mins}m ${secs}s`;
-    }
+        const localTime = new Date(targetUTC.toLocaleString());
+        const weekday = localTime.toLocaleDateString(undefined, { weekday: 'long' });
+        const formattedDate = localTime.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+        const formattedTime = localTime.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', hour12: true });
+        const tzName = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-    // Show event info
-    targetEl.textContent = `Next reveal: ${eventPT.toLocaleString('en-US', {
-      timeZone: 'America/Los_Angeles',
-      dateStyle: 'full',
-      timeStyle: 'short'
-    })} (PT)`;
+        endtimeEl.innerHTML = `${weekday}, ${formattedDate} at ${formattedTime}<br>(${tzName})`;
 
-    tzEl.textContent = `Your local time zone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}`;
-
-    updateCountdown();
-    setInterval(updateCountdown, 1000);
-  </script>
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    </script>
 </body>
 </html>
