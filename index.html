@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Humble Choice Tracker</title>
-    <meta name="description" content="Countdown to the next Humble Choice reveal, this month's games and past lineups, with links to Humble and Steam.">
+    <meta name="description" content="Countdown to the next Humble Choice reveal, this month's games and every past lineup since 2015, with links to Humble and Steam.">
     <meta name="theme-color" content="#14161b">
     <style>
         :root {
@@ -219,75 +219,122 @@
             border-radius: 6px;
             margin-left: 8px;
             vertical-align: middle;
+            white-space: nowrap;
         }
 
-        /* Game list */
-        .games {
+        .badge-muted { color: var(--muted); background: var(--surface-2); }
+
+        /* Cover art */
+        .cover {
+            position: relative;
+            display: block;
+            aspect-ratio: 460 / 215;
+            background: var(--surface-2);
+            overflow: hidden;
+        }
+
+        .cover img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cover .mono {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--muted);
+            letter-spacing: 1px;
+        }
+
+        /* Current month: tiles */
+        .tiles {
             list-style: none;
             margin: 0;
             padding: 0;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 12px;
         }
 
-        .game {
+        .tile {
             display: flex;
-            align-items: center;
-            gap: 12px;
+            flex-direction: column;
+            height: 100%;
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 12px 12px 12px 14px;
-            min-width: 0;
+            overflow: hidden;
+            text-decoration: none;
+            transition: border-color 0.15s ease, transform 0.15s ease;
         }
 
-        .game-idx {
-            flex: 0 0 auto;
-            width: 28px;
-            height: 28px;
-            display: grid;
-            place-items: center;
-            border-radius: 8px;
-            background: var(--surface-2);
-            color: var(--muted);
-            font-size: 0.8rem;
-            font-weight: 600;
-            font-variant-numeric: tabular-nums;
-        }
+        a.tile:hover { border-color: var(--steam); transform: translateY(-2px); }
 
-        .game-name {
+        .tile-body {
             flex: 1 1 auto;
-            min-width: 0;
-            font-weight: 500;
-            overflow-wrap: anywhere;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 10px 12px 12px;
         }
 
-        .game-note {
-            display: block;
-            font-size: 0.75rem;
-            color: var(--muted);
-            font-weight: 400;
-        }
+        .tile-name { font-weight: 600; font-size: 0.95rem; line-height: 1.3; overflow-wrap: anywhere; }
 
-        .store-link {
-            flex: 0 0 auto;
+        .store {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             font-size: 0.8rem;
             font-weight: 600;
             color: var(--steam);
-            text-decoration: none;
-            border: 1px solid rgba(102, 192, 244, 0.35);
-            border-radius: 8px;
-            padding: 8px 10px;
-            min-height: 36px;
             white-space: nowrap;
         }
 
-        .store-link:hover { background: rgba(102, 192, 244, 0.1); }
-        .store-link svg { width: 14px; height: 14px; }
+        .store.off { color: var(--muted); font-weight: 400; white-space: normal; }
+
+        /* Archive rows */
+        .rows {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 8px;
+        }
+
+        .row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 8px 12px 8px 8px;
+            text-decoration: none;
+            min-width: 0;
+            min-height: 60px;
+        }
+
+        a.row:hover { border-color: var(--steam); }
+
+        .row .cover {
+            flex: 0 0 auto;
+            width: 92px;
+            border-radius: 6px;
+        }
+
+        .row .cover .mono { font-size: 0.8rem; }
+
+        .row-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+        .row-name { font-weight: 500; font-size: 0.9rem; line-height: 1.3; overflow-wrap: anywhere; }
+        .row-meta { font-size: 0.75rem; color: var(--muted); }
 
         .empty {
             background: var(--surface);
@@ -301,7 +348,64 @@
         .month-actions { margin-top: 14px; }
 
         /* Archive */
-        .archive { display: grid; gap: 10px; }
+        .tools {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .search {
+            width: 100%;
+            font: inherit;
+            font-size: 1rem;
+            color: var(--text);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            min-height: 46px;
+        }
+
+        .search::placeholder { color: var(--muted); }
+        .search:focus { outline: none; border-color: var(--steam); }
+
+        .years {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            scrollbar-width: thin;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .years a {
+            flex: 0 0 auto;
+            font-size: 0.85rem;
+            color: var(--muted);
+            text-decoration: none;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 6px 12px;
+            min-height: 34px;
+        }
+
+        .years a:hover { color: var(--text); border-color: var(--muted); }
+
+        .year { scroll-margin-top: 64px; }
+        .year + .year { margin-top: 28px; }
+
+        .year h3 {
+            margin: 0 0 10px;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+
+        .year h3 small { color: var(--muted); font-weight: 400; font-size: 0.8rem; }
+
+        .months { display: grid; gap: 8px; }
 
         details {
             background: var(--surface);
@@ -313,16 +417,17 @@
         summary {
             list-style: none;
             cursor: pointer;
-            padding: 14px 16px;
+            padding: 12px 16px;
             display: flex;
             align-items: center;
             gap: 12px;
-            min-height: 56px;
+            min-height: 52px;
         }
 
         summary::-webkit-details-marker { display: none; }
 
         summary .m-title { font-weight: 600; flex: 0 0 auto; }
+        summary .m-title .badge { margin-left: 6px; }
 
         summary .m-preview {
             flex: 1 1 auto;
@@ -344,8 +449,7 @@
         details[open] summary .chev { transform: rotate(180deg); }
         details[open] summary { border-bottom: 1px solid var(--border); }
 
-        .details-body { padding: 14px; }
-        .details-body .game { background: var(--bg); }
+        .details-body { padding: 12px; }
 
         .details-actions {
             display: flex;
@@ -356,6 +460,8 @@
 
         .details-actions .btn { padding: 10px 14px; font-size: 0.85rem; }
 
+        .results-note { color: var(--muted); font-size: 0.85rem; margin: 0 0 10px; }
+
         footer {
             border-top: 1px solid var(--border);
             padding: 24px 0 calc(24px + env(safe-area-inset-bottom));
@@ -365,8 +471,11 @@
         }
 
         footer p { margin: 4px 0; }
+        footer a { color: var(--muted); }
 
         :focus-visible { outline: 2px solid var(--steam); outline-offset: 2px; }
+
+        [hidden] { display: none !important; }
 
         @media (max-width: 600px) {
             nav a.hide-sm { display: none; }
@@ -375,7 +484,10 @@
             .unit { padding: 12px 2px 10px; border-radius: 10px; }
             .unit .lbl { font-size: 0.6rem; letter-spacing: 1px; }
             .hero-actions .btn { flex: 1 1 100%; }
-            .games { grid-template-columns: 1fr; }
+            .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+            .tile-body { padding: 8px 10px 10px; }
+            .tile-name { font-size: 0.85rem; }
+            .rows { grid-template-columns: 1fr; }
             summary .m-preview { display: none; }
         }
 
@@ -443,9 +555,14 @@
             <div class="wrap">
                 <div class="section-head">
                     <h2>Previous months</h2>
-                    <p>Tap a month to see its lineup.</p>
+                    <p id="archiveStats"></p>
                 </div>
-                <div class="archive" id="archiveList"></div>
+                <div class="tools">
+                    <input class="search" id="search" type="search" placeholder="Search all games…" autocomplete="off" aria-label="Search all games">
+                    <nav class="years" id="years" aria-label="Jump to year"></nav>
+                </div>
+                <div id="results" hidden></div>
+                <div id="archiveList"></div>
             </div>
         </section>
     </main>
@@ -454,89 +571,19 @@
         <div class="wrap">
             <p>Unofficial fan site — not affiliated with Humble Bundle or Valve.</p>
             <p>Reveals happen on the first Tuesday of each month at 10:00 AM Pacific. Game lists are maintained by hand and may lag behind Humble.</p>
+            <p>Lineup history and Steam IDs based on <a href="https://github.com/tomnatt/humble-choice" target="_blank" rel="noopener">tomnatt/humble-choice</a> (MIT).</p>
         </div>
     </footer>
 
+    <script src="games.js"></script>
     <script>
-        // Lineups, newest first. Key = "YYYY-MM" of the month the bundle was revealed.
-        // `store` is optional and defaults to Steam; use it for games redeemed elsewhere.
-        const BUNDLES = [
-            { month: '2026-10', games: [
-                'Like a Dragon: Pirate Yakuza in Hawaii',
-                'Prince of Persia: The Lost Crown',
-                'Psychonauts 2',
-                'Deep Rock Galactic: Survivor',
-                'Cataclismo',
-                'Dungeons & Degenerate Gamblers',
-                "Asgard's Fall: Viking Survivors",
-                'Toy Shire'
-            ] },
-            { month: '2026-09', games: [
-                'Frostpunk 2',
-                'Sonic X Shadow Generations',
-                'Voidtrain',
-                'Ballionaire',
-                'Guntouchables',
-                'Urban Jungle',
-                'Pocket Mirror ~ GoldenerTraum',
-                'Keylocker | Turn Based Cyberpunk Action'
-            ] },
-            { month: '2026-08', games: [
-                'Like a Dragon: Infinite Wealth',
-                'Dead Cells',
-                "Teenage Mutant Ninja Turtles: Shredder's Revenge",
-                'Decktamer',
-                'Conquest Dark',
-                'Gatekeeper',
-                'Pile Up!',
-                'Dark Envoy'
-            ] },
-            { month: '2026-07', games: [
-                'Sea of Stars',
-                'TUNIC',
-                'Neon White',
-                'Police Simulator: Patrol Officers',
-                'Drop Duchy',
-                'Sledders',
-                'Dicefolk',
-                'Our Adventurer Guild'
-            ] },
-            { month: '2026-06', games: [
-                'Octopath Traveler II',
-                'The Riftbreaker',
-                'Life is Strange: Double Exposure',
-                'INDIKA',
-                'Citizen Sleeper 2: Starward Vector',
-                'Construction Simulator',
-                'Hell Clock',
-                'Overlooting'
-            ] },
-            { month: '2026-05', games: [
-                { name: 'Diablo IV', store: 'battlenet' },
-                'Shin Megami Tensei V: Vengeance',
-                'Crysis 3 Remastered',
-                'Heroes of Hammerwatch II',
-                'Nordhold',
-                'Rogue Waters',
-                'Cubic Odyssey',
-                'Mini Settlers'
-            ] },
-            { month: '2026-04', games: [
-                "Assassin's Creed Valhalla",
-                'Daemon X Machina: Titanic Scion',
-                'The Lord of the Rings: Return to Moria',
-                'Until Then',
-                'Planet of Lana',
-                'Artisan TD',
-                'The Procession to Calvary',
-                'Buddy Simulator 1984'
-            ] }
-        ];
+        const BUNDLES = window.HUMBLE_CHOICE || [];
 
         const PT = 'America/Los_Angeles';
         const HUMBLE_URL = 'https://www.humblebundle.com/membership';
         const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july',
             'august', 'september', 'october', 'november', 'december'];
+        const OTHER_STORES = { 'Battle.net': 'https://shop.battle.net/' };
 
         // Offset (minutes) of Pacific time from UTC at a given instant: -480 (PST) or -420 (PDT).
         function ptOffsetMinutes(date) {
@@ -580,22 +627,28 @@
             return new Date(Date.UTC(y, m - 1, 15)).toLocaleDateString(undefined, { month: 'long', year: 'numeric', timeZone: 'UTC' });
         }
 
+        function bundleLabel(b) {
+            return monthLabel(b.month);
+        }
+
         function humbleMonthUrl(key) {
             const [y, m] = key.split('-').map(Number);
             return `${HUMBLE_URL}/${MONTHS[m - 1]}-${y}`;
         }
 
-        function storeLink(game) {
-            if (game.store === 'battlenet') {
-                return { href: 'https://shop.battle.net/', label: 'Battle.net' };
+        // Normalise [name, steamId, otherStore] into an object with a link.
+        function toGame(entry) {
+            const [name, steamId, otherStore] = entry;
+            if (steamId) {
+                return { name, steamId, href: `https://store.steampowered.com/app/${steamId}/`, store: 'Steam' };
             }
-            return {
-                href: `https://store.steampowered.com/search/?term=${encodeURIComponent(game.name)}`,
-                label: 'Steam'
-            };
+            if (otherStore) {
+                return { name, href: OTHER_STORES[otherStore], store: otherStore };
+            }
+            return { name, href: null, store: null };
         }
 
-        const steamIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>';
+        const arrow = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>';
 
         function el(tag, attrs = {}, children = []) {
             const node = document.createElement(tag);
@@ -608,33 +661,84 @@
             return node;
         }
 
-        function renderGames(games) {
-            const list = el('ul', { class: 'games' });
-            games.forEach((g, i) => {
-                const game = typeof g === 'string' ? { name: g } : g;
-                const link = storeLink(game);
-                const name = el('span', { class: 'game-name', text: game.name });
-                if (game.store === 'battlenet') name.append(el('span', { class: 'game-note', text: 'Redeemed on Battle.net' }));
-                const a = el('a', {
-                    class: 'store-link',
-                    href: link.href,
-                    target: '_blank',
-                    rel: 'noopener',
-                    'aria-label': `View ${game.name} on ${link.label}`
-                });
-                a.append(link.label);
-                a.insertAdjacentHTML('beforeend', steamIcon);
-                list.append(el('li', { class: 'game' }, [
-                    el('span', { class: 'game-idx', text: String(i + 1) }),
-                    name,
-                    a
+        function initials(name) {
+            return name.replace(/[^A-Za-z0-9 ]/g, ' ').split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase() || '?';
+        }
+
+        // Steam cover art, with a fallback chain ending in a lettered placeholder.
+        function cover(game) {
+            const box = el('span', { class: 'cover' });
+            const showMono = () => box.replaceChildren(el('span', { class: 'mono', text: initials(game.name) }));
+            if (!game.steamId) { showMono(); return box; }
+            const sources = [
+                `https://shared.cloudflare.steamstatic.com/store_item_assets/steam/apps/${game.steamId}/header.jpg`,
+                `https://cdn.cloudflare.steamstatic.com/steam/apps/${game.steamId}/header.jpg`,
+                `https://shared.cloudflare.steamstatic.com/store_item_assets/steam/apps/${game.steamId}/capsule_231x87.jpg`
+            ];
+            let i = 0;
+            const img = el('img', { src: sources[0], alt: '', loading: 'lazy', decoding: 'async' });
+            img.addEventListener('error', () => {
+                i++;
+                if (i < sources.length) img.src = sources[i];
+                else showMono();
+            });
+            box.append(img);
+            return box;
+        }
+
+        function storeLabel(game) {
+            if (game.href) {
+                const s = el('span', { class: 'store' }, [game.store]);
+                s.insertAdjacentHTML('beforeend', arrow);
+                return s;
+            }
+            return el('span', { class: 'store off', text: 'No longer on Steam' });
+        }
+
+        function linkOrDiv(game, cls, label) {
+            if (!game.href) return el('div', { class: cls });
+            return el('a', {
+                class: cls,
+                href: game.href,
+                target: '_blank',
+                rel: 'noopener',
+                'aria-label': label
+            });
+        }
+
+        function renderTiles(entries) {
+            const list = el('ul', { class: 'tiles' });
+            entries.map(toGame).forEach(game => {
+                const tile = linkOrDiv(game, 'tile', `${game.name} on ${game.store}`);
+                tile.append(cover(game), el('span', { class: 'tile-body' }, [
+                    el('span', { class: 'tile-name', text: game.name }),
+                    storeLabel(game)
                 ]));
+                list.append(el('li', {}, tile));
+            });
+            return list;
+        }
+
+        function renderRows(items) {
+            const list = el('ul', { class: 'rows' });
+            items.forEach(({ entry, meta }) => {
+                const game = toGame(entry);
+                const row = linkOrDiv(game, 'row', `${game.name} on ${game.store}`);
+                const text = el('span', { class: 'row-text' }, [el('span', { class: 'row-name', text: game.name })]);
+                if (meta) text.append(el('span', { class: 'row-meta', text: meta }));
+                text.append(storeLabel(game));
+                row.append(cover(game), text);
+                list.append(el('li', {}, row));
             });
             return list;
         }
 
         function humbleButton(key, text, cls = 'btn btn-ghost') {
             return el('a', { class: cls, href: humbleMonthUrl(key), target: '_blank', rel: 'noopener', text });
+        }
+
+        function schemeBadge(b) {
+            return b.scheme === 'monthly' ? el('span', { class: 'badge badge-muted', text: 'Monthly' }) : null;
         }
 
         const fmtLocal = d => d.toLocaleString(undefined, {
@@ -644,51 +748,126 @@
 
         let win = getRevealWindow(new Date());
 
-        function renderStatic() {
-            const byMonth = new Map(BUNDLES.map(b => [b.month, b]));
+        function renderHero() {
             const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
             document.getElementById('nextTitle').textContent = `${monthLabel(win.nextKey)} Humble Choice`;
-            document.getElementById('nextWhen').innerHTML = '';
-            document.getElementById('nextWhen').append(el('strong', { text: fmtLocal(win.next) }), ` (${tz})`);
+            document.getElementById('nextWhen').replaceChildren(el('strong', { text: fmtLocal(win.next) }), ` (${tz})`);
             document.getElementById('nextWhenPT').textContent = win.next.toLocaleString('en-US', {
                 timeZone: PT, month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short'
             });
             document.getElementById('progressStart').textContent = fmtShort(win.prev);
             document.getElementById('progressEnd').textContent = fmtShort(win.next);
+        }
 
-            // Current month
-            const current = byMonth.get(win.prevKey);
+        function renderCurrent() {
+            const current = BUNDLES.find(b => b.month === win.prevKey && b.scheme === 'choice');
             document.getElementById('currentTitle').textContent = monthLabel(win.prevKey);
             document.getElementById('currentEnds').textContent = `Available until ${fmtShort(win.next)}`;
-            const currentGames = document.getElementById('currentGames');
-            const currentActions = document.getElementById('currentActions');
-            currentGames.replaceChildren(current
-                ? renderGames(current.games)
+            document.getElementById('currentGames').replaceChildren(current
+                ? renderTiles(current.games)
                 : el('div', { class: 'empty', text: "This month's lineup hasn't been added here yet — check Humble for the games." }));
-            currentActions.replaceChildren(humbleButton(win.prevKey, `View ${monthLabel(win.prevKey)} on Humble ↗`, 'btn btn-primary'));
+            document.getElementById('currentActions').replaceChildren(
+                humbleButton(win.prevKey, `View ${monthLabel(win.prevKey)} on Humble ↗`, 'btn btn-primary'));
+        }
 
-            // Archive
-            const archive = document.getElementById('archiveList');
-            archive.replaceChildren();
-            BUNDLES.filter(b => b.month < win.prevKey).forEach(b => {
-                const names = b.games.map(g => typeof g === 'string' ? g : g.name);
-                const details = el('details', {}, [
-                    el('summary', {}, [
-                        el('span', { class: 'm-title', text: monthLabel(b.month) }),
-                        el('span', { class: 'm-preview', text: names.slice(0, 3).join(' · ') + (names.length > 3 ? ` +${names.length - 3}` : '') }),
-                        el('span', { class: 'chev', html: '&#9662;', 'aria-hidden': 'true' })
-                    ]),
-                    el('div', { class: 'details-body' }, [
-                        renderGames(b.games),
-                        el('div', { class: 'details-actions' }, [humbleButton(b.month, `${monthLabel(b.month)} on Humble ↗`)])
-                    ])
-                ]);
-                archive.append(details);
+        function pastBundles() {
+            return BUNDLES.filter(b => b.month < win.prevKey || (b.month === win.prevKey && b.scheme !== 'choice'));
+        }
+
+        function renderArchive() {
+            const past = pastBundles();
+            const totalGames = past.reduce((n, b) => n + b.games.length, 0);
+            const firstYear = past.length ? past[past.length - 1].month.slice(0, 4) : '';
+            document.getElementById('archiveStats').textContent =
+                `${past.length} bundles · ${totalGames.toLocaleString()} games since ${firstYear}`;
+
+            const byYear = new Map();
+            past.forEach(b => {
+                const y = b.month.slice(0, 4);
+                if (!byYear.has(y)) byYear.set(y, []);
+                byYear.get(y).push(b);
             });
-            if (!archive.children.length) {
-                archive.append(el('div', { class: 'empty', text: 'No past months yet.' }));
+
+            const years = document.getElementById('years');
+            const archive = document.getElementById('archiveList');
+            years.replaceChildren();
+            archive.replaceChildren();
+
+            for (const [year, bundles] of byYear) {
+                years.append(el('a', { href: `#y${year}`, text: year }));
+                const months = el('div', { class: 'months' });
+                bundles.forEach(b => {
+                    const names = b.games.map(g => g[0]);
+                    const body = el('div', { class: 'details-body' });
+                    const details = el('details', {}, [
+                        el('summary', {}, [
+                            el('span', { class: 'm-title' }, [bundleLabel(b), schemeBadge(b)]),
+                            el('span', { class: 'm-preview', text: names.slice(0, 3).join(' · ') + (names.length > 3 ? ` +${names.length - 3}` : '') }),
+                            el('span', { class: 'chev', html: '&#9662;', 'aria-hidden': 'true' })
+                        ]),
+                        body
+                    ]);
+                    // Build the game list on first open so images only load when needed.
+                    details.addEventListener('toggle', () => {
+                        if (!details.open || body.childElementCount) return;
+                        body.append(
+                            renderRows(b.games.map(entry => ({ entry }))),
+                            el('div', { class: 'details-actions' }, [humbleButton(b.month, `${bundleLabel(b)} on Humble ↗`)])
+                        );
+                    });
+                    months.append(details);
+                });
+                archive.append(el('div', { class: 'year', id: `y${year}` }, [
+                    el('h3', {}, [year, el('small', { text: `${bundles.length} bundles` })]),
+                    months
+                ]));
             }
+            if (!past.length) archive.append(el('div', { class: 'empty', text: 'No past months yet.' }));
+        }
+
+        // Search across every bundle (including the current one).
+        const searchInput = document.getElementById('search');
+        const results = document.getElementById('results');
+        const normalise = s => s.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
+        const INDEX = BUNDLES.flatMap(b => b.games.map(entry => ({
+            entry, key: normalise(entry[0]),
+            meta: `${bundleLabel(b)}${b.scheme === 'monthly' ? ' · Humble Monthly' : ''}`
+        })));
+        const MAX_RESULTS = 60;
+
+        function runSearch() {
+            const q = normalise(searchInput.value);
+            const archive = document.getElementById('archiveList');
+            const years = document.getElementById('years');
+            if (!q) {
+                results.hidden = true;
+                archive.hidden = false;
+                years.hidden = false;
+                return;
+            }
+            const terms = q.split(' ');
+            const hits = INDEX.filter(item => terms.every(t => item.key.includes(t)));
+            results.replaceChildren(
+                el('p', { class: 'results-note', text: hits.length
+                    ? `${hits.length} match${hits.length === 1 ? '' : 'es'}${hits.length > MAX_RESULTS ? ` — showing the first ${MAX_RESULTS}` : ''}`
+                    : 'No games found.' }),
+                hits.length ? renderRows(hits.slice(0, MAX_RESULTS)) : null
+            );
+            results.hidden = false;
+            archive.hidden = true;
+            years.hidden = true;
+        }
+
+        let searchTimer;
+        searchInput.addEventListener('input', () => {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(runSearch, 120);
+        });
+
+        function renderAll() {
+            renderHero();
+            renderCurrent();
+            renderArchive();
         }
 
         const pad = n => String(n).padStart(2, '0');
@@ -704,7 +883,7 @@
             if (now >= win.next) {
                 // Rolled over into a new month: recompute everything.
                 win = getRevealWindow(now);
-                renderStatic();
+                renderAll();
             }
             const diff = win.next - now;
             cd.days.textContent = Math.floor(diff / 86400000);
@@ -717,7 +896,7 @@
             document.getElementById('progressPct').textContent = `${Math.round(pct)}% through the month`;
         }
 
-        renderStatic();
+        renderAll();
         tick();
         setInterval(tick, 1000);
     </script>
